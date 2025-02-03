@@ -1,0 +1,4 @@
+The F1 score is a crucial metric in machine learning classification tasks, especially when dealing with imbalanced datasets. It is the harmonic mean of precision and recall, ensuring a balance between both. Precision measures the proportion of correctly predicted positive observations to the total predicted positives, while recall measures the proportion of correctly predicted positive observations to all actual positives. 
+
+An F1 score of 1 indicates perfect precision and recall, while an F1 score of 0 means the model has failed completely. This metric is often used in applications such as medical diagnosis, fraud detection, and search engines, where false positives and false negatives carry different costs. By considering both precision and recall, the F1 score helps in selecting models that provide a balanced performance rather than focusing solely on accuracy.
+

@@ -1,0 +1,3 @@
+The F1 score is a widely used evaluation metric in classification problems where precision and recall must be balanced. Unlike accuracy, which may be misleading when class distribution is skewed, the F1 score accounts for both false positives and false negatives. It is calculated as the harmonic mean of precision and recall, preventing extreme values from dominating the evaluation.
+
+For example, in spam detection, a model with high precision may still fail if recall is too low, leading to many missed spam emails. Conversely, a model with high recall but low precision might classify too many legitimate emails as spam. The F1 score provides a single metric that ensures neither precision nor recall is ignored, making it ideal for real-world classification tasks.
