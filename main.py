@@ -1,15 +1,6 @@
 import argparse
-from enum import Enum
 from transformers import pipeline
 from rouge_score import rouge_scorer
-
-class SummaryLength(Enum):
-    SHORT = "short"
-    MID = "mid"
-    LONG = "long"
-
-    def __str__(self):
-        return self.value
 
 def main():
     args = parseCommands()
@@ -18,7 +9,6 @@ def main():
     text = "".join(load_text(file) for file in args.files)
 
     try:
-        print("\nSummarizing text...")
         summary, precision, recall, f1_score, accuracy = summarize_text(text, args.length, args.model)
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -38,6 +28,9 @@ def summarize_text(text, summary_len, model_name):
     max_len, min_len = get_summary_len(text, summary_len)
     print("MIN:", min_len)
     print("MAX:", max_len)
+    print()
+    print("\nSummarizing text...")
+
     summary: str = summarizer(text, min_length=min_len, max_length=max_len, do_sample=False)[0]["summary_text"] # type: ignore
 
     # Compute F1 score using ROUGE-1
@@ -55,13 +48,13 @@ def summarize_text(text, summary_len, model_name):
 def get_summary_len(text: str, summary_len):
     text_len_by_word = len(text.strip().split(" "))
 
-    if summary_len == SummaryLength.SHORT:
+    if summary_len == "short":
         max_length, min_length = calc_range(text_len_by_word, 0.30)
 
-    elif summary_len == SummaryLength.MID:
+    elif summary_len == "mid":
         max_length, min_length = calc_range(text_len_by_word, 0.50)
 
-    elif summary_len == SummaryLength.LONG:
+    elif summary_len == "long":
         max_length, min_length = calc_range(text_len_by_word, 0.70)
 
     else:
@@ -71,9 +64,9 @@ def get_summary_len(text: str, summary_len):
     return max_length, min_length
 
 def calc_range(text_len, percentage):
-    short_avg = int(text_len * percentage)
+    avg = int(text_len * percentage)
     added_range = int(text_len * 0.1)
-    max_length, min_length = short_avg + added_range, short_avg - added_range
+    max_length, min_length = avg + added_range, avg - added_range
     return max_length, min_length
 
 def parseCommands():
@@ -81,9 +74,9 @@ def parseCommands():
     parser.add_argument("files", type=str, nargs="+", help="One or more text files to summarize.")
     parser.add_argument("--model", type=str, default="facebook/bart-large-cnn", help="The Hugging Face model to use for summarization (default: facebook/bart-large-cnn).")
     parser.add_argument("--length",
-        type=lambda x: SummaryLength(x),  
-        choices=[e.value for e in SummaryLength],
-        default=SummaryLength.MID.value,
+        type=str,
+        choices=["short", "mid", "long"],
+        default="mid",
         help="Choose the length of the summary: short, mid, or long."
     )
 
